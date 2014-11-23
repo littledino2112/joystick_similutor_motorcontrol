@@ -1,4 +1,4 @@
-from Tkinter import Label, Tk, Frame, StringVar, Button
+from Tkinter import Label, Tk, Frame, StringVar, Button, LEFT, RIGHT, BOTTOM, Entry, LabelFrame
 from threading import Timer
 import pygame
 
@@ -42,7 +42,7 @@ class GUI(Frame):
 
         def initGUI(self):
                 self.parent.title("Joystick GUI")
-                self.pack()
+                self.pack(fill='both')
 
                 btnQuit = Button(self, text="Quit", command=self.quit)
                 btnQuit.pack()
@@ -66,6 +66,30 @@ class GUI(Frame):
                         self.lblAxis2.pack()
                         self.lblAxis3 = Label(self, text="Axis 3: {}".format(self.axis3))
                         self.lblAxis3.pack()
+
+                        # Add 3 entry texts which are used to config motors' speed.
+                        label_frame_motor_config = LabelFrame(self, text="Motors' Speed configuration")
+                        label_frame_motor_config.pack()
+                        frame_motor1 = Frame(label_frame_motor_config)
+                        frame_motor1.pack(fill='both')
+                        lblMotorSpeed1 = Label(frame_motor1, text="Motor 1's speed ")
+                        lblMotorSpeed1.pack(side=LEFT)
+                        self.entryMotorSpeed1 = Entry(frame_motor1)
+                        self.entryMotorSpeed1.pack(side=LEFT)
+                        frame_motor2 = Frame(label_frame_motor_config)
+                        frame_motor2.pack(fill='both')
+                        lblMotorSpeed2 = Label(frame_motor2, text="Motor 2's speed ")
+                        lblMotorSpeed2.pack(side=LEFT)
+                        self.entryMotorSpeed2 = Entry(frame_motor2)
+                        self.entryMotorSpeed2.pack(side=LEFT)
+                        frame_motor3 = Frame(label_frame_motor_config)
+                        frame_motor3.pack(fill='both')
+                        lblMotorSpeed3 = Label(frame_motor3, text="Motor 3's speed ")
+                        lblMotorSpeed3.pack(side=LEFT)
+                        self.entryMotorSpeed3 = Entry(frame_motor3)
+                        self.entryMotorSpeed3.pack(side=LEFT)
+                        self.btnMotorSpeed = Button(label_frame_motor_config, text="Submit")
+                        self.btnMotorSpeed.pack()
 
                         # Call periodic func to update axis value if Joystick is connected
                         self.after(100, self.periodicCall)
@@ -95,7 +119,7 @@ class GUI(Frame):
 
 def main():
         window = Tk()
-        window.geometry("200x300+200+200")
+        window.geometry("400x400+200+200")
         mainGUI = GUI(window)
         window.mainloop()
 
