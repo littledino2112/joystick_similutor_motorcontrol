@@ -2,6 +2,7 @@ from Tkinter import Label, Tk, Frame, StringVar, Button, LEFT, RIGHT, BOTTOM, En
 from threading import Timer
 import pygame
 import serial, glob, sys
+import ttk
 
 DEBUG = 1
 
@@ -85,8 +86,17 @@ class GUI(Frame):
                   lblMotorSpeed3.pack(side=LEFT)
                   self.entryMotorSpeed3 = Entry(frame_motor3)
                   self.entryMotorSpeed3.pack(side=LEFT)
-                  self.btnMotorSpeed = Button(label_frame_motor_config, text="Submit")
+                  self.btnMotorSpeed = Button(label_frame_motor_config, text="Change")
                   self.btnMotorSpeed.pack()
+
+                  # Add one Frame used to contain serial port selection
+                  frame_serialport = Frame(self)
+                  frame_serialport.pack(fill='both')
+                  Label(frame_serialport, text="Serial Port selection").pack(side=LEFT)
+                  self.cbboxSerialPort = ttk.Combobox(frame_serialport, values=self.setUpSerialPorts())     # Need to access this parameter for serial port initialization
+                  self.cbboxSerialPort.pack(fill='both',side=LEFT)
+                  btnStart = Button(frame_serialport, text="Start")
+                  btnStart.pack(side=LEFT)      
 
                   # Call periodic func to update axis value if Joystick is connected
                   self.after(100, self.periodicCall)
@@ -94,7 +104,8 @@ class GUI(Frame):
                   self.lblNoJoystickFound = Label(self, text="No Joystick Found!")
                   self.lblNoJoystickFound.pack()
 
-            btnQuit = Button(self, text="Quit", command=self.quit)
+            
+            btnQuit = ttk.Button(self, text="Quit", command=self.quit)
             btnQuit.pack()
 
       def periodicCall(self): 
@@ -112,12 +123,12 @@ class GUI(Frame):
             else: 
                   print "Quit program"
 
-      def setUpSerialPorts():
-            if (sys.platform.startwith('win')):
+      def setUpSerialPorts(self):
+            if (sys.platform.startswith('win')):
                   ports = ['COM' + str(i+1) for i in range(256)]
-            elif (sys.platform.startwith('linux')):
+            elif (sys.platform.startswith('linux')):
                   ports = glob.glob('/dev/tty[A-Za-z]*')
-            elif (sys.platform.startwith('darwin')):
+            elif (sys.platform.startswith('darwin')):
                   ports = glob.glob('/dev/tty.*')
             else:
                   raise EnvironmentError('Unsupported platform')
