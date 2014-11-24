@@ -89,13 +89,14 @@ class GUI(Frame):
                   self.btnMotorSpeed = Button(label_frame_motor_config, text="Change")
                   self.btnMotorSpeed.pack()
 
-                  # Add one Frame used to contain serial port selection
+                  # Add one Frame used to contain serial port selection (Combobox)
+                  serialPortResults = self.setUpSerialPorts()
                   frame_serialport = Frame(self)
                   frame_serialport.pack(fill='both')
                   Label(frame_serialport, text="Serial Port selection").pack(side=LEFT)
-                  self.cbboxSerialPort = ttk.Combobox(frame_serialport, values=self.setUpSerialPorts())     # Need to access this parameter for serial port initialization
+                  self.cbboxSerialPort = ttk.Combobox(frame_serialport, values=serialPortResults)     # Need to access this parameter for serial port initialization
                   self.cbboxSerialPort.pack(fill='both',side=LEFT)
-                  btnStart = Button(frame_serialport, text="Start")
+                  btnStart = Button(frame_serialport, text="Start", command=self.startSerialPort)
                   btnStart.pack(side=LEFT)      
 
                   # Call periodic func to update axis value if Joystick is connected
@@ -105,7 +106,7 @@ class GUI(Frame):
                   self.lblNoJoystickFound.pack()
 
             
-            btnQuit = ttk.Button(self, text="Quit", command=self.quit)
+            btnQuit = Button(self, text="Quit", command=self.quit)
             btnQuit.pack()
 
       def periodicCall(self): 
@@ -143,7 +144,11 @@ class GUI(Frame):
                         pass
             return results
 
-
+      def startSerialPort(self):
+            selected = self.cbboxSerialPort.get()
+            self.selectedSerialPort = serial.Serial(selected, 9600, timeout=2)
+            self.selectedSerialPort.write("Hoang")
+            
 
 def main():
         window = Tk()
