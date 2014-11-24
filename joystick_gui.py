@@ -3,6 +3,7 @@ from threading import Timer
 import pygame
 import serial, glob, sys
 import ttk
+import tkMessageBox
 
 DEBUG = 1
 
@@ -72,19 +73,25 @@ class GUI(Frame):
                   frame_motor1.pack(fill='both')
                   lblMotorSpeed1 = Label(frame_motor1, text="Motor 1's speed ")
                   lblMotorSpeed1.pack(side=LEFT)
-                  self.entryMotorSpeed1 = Entry(frame_motor1)
+                  self.motorspeed1 = StringVar()
+                  self.entryMotorSpeed1 = Entry(frame_motor1, textvariable=self.motorspeed1)
+                  self.motorspeed1.set("1.0")
                   self.entryMotorSpeed1.pack(side=LEFT)
                   frame_motor2 = Frame(label_frame_motor_config)
                   frame_motor2.pack(fill='both')
                   lblMotorSpeed2 = Label(frame_motor2, text="Motor 2's speed ")
                   lblMotorSpeed2.pack(side=LEFT)
-                  self.entryMotorSpeed2 = Entry(frame_motor2)
+                  self.motorspeed2 = StringVar()
+                  self.entryMotorSpeed2 = Entry(frame_motor2, textvariable=self.motorspeed2)
+                  self.motorspeed2.set("1.0")
                   self.entryMotorSpeed2.pack(side=LEFT)
                   frame_motor3 = Frame(label_frame_motor_config)
                   frame_motor3.pack(fill='both')
                   lblMotorSpeed3 = Label(frame_motor3, text="Motor 3's speed ")
                   lblMotorSpeed3.pack(side=LEFT)
-                  self.entryMotorSpeed3 = Entry(frame_motor3)
+                  self.motorspeed3 = StringVar()
+                  self.entryMotorSpeed3 = Entry(frame_motor3, textvariable=self.motorspeed3)
+                  self.motorspeed3.set("1.0")
                   self.entryMotorSpeed3.pack(side=LEFT)
                   self.btnMotorSpeed = Button(label_frame_motor_config, text="Change")
                   self.btnMotorSpeed.pack()
@@ -146,13 +153,16 @@ class GUI(Frame):
 
       def startSerialPort(self):
             selected = self.cbboxSerialPort.get()
-            self.selectedSerialPort = serial.Serial(selected, 9600, timeout=2)
+            try:
+                  self.selectedSerialPort = serial.Serial(selected, 9600, timeout=2)
+            except (OSError, serial.SerialTimeoutException):
+                  tkMessageBox.showinfo("Timout error connection to serial port")
             self.selectedSerialPort.write("Hoang")
             
 
 def main():
         window = Tk()
-        window.geometry("400x600+200+200")
+        window.geometry("400x500+200+200")
         mainGUI = GUI(window)
         window.mainloop()
 
