@@ -57,15 +57,12 @@ class GUI(Frame):
                         self.lblButtonNumbers.pack()
 
                         # Show axis value
-                        self.axis1=0
-                        self.axis2=0
-                        self.axis3=0
-                        self.lblAxis1 = Label(self, text="Axis 1: {}".format(self.axis1))
-                        self.lblAxis1.pack()
-                        self.lblAxis2 = Label(self, text="Axis 2: {}".format(self.axis2))
-                        self.lblAxis2.pack()
-                        self.lblAxis3 = Label(self, text="Axis 3: {}".format(self.axis3))
-                        self.lblAxis3.pack()
+                        self.list_Axes = list()  # create a list to contain axes
+                        self.list_lblAxes = list()
+                        for i in range(self.joystick.get_numaxes()):
+                              self.list_Axes.append(0)      # Initialize value for axis is 0
+                              self.list_lblAxes.append(Label(self, text="Axis {}: {}".format(i, self.list_Axes[i])))
+                              self.list_lblAxes[i].pack()
 
                         # Add 3 entry texts which are used to config motors' speed.
                         label_frame_motor_config = LabelFrame(self, text="Motors' Speed configuration")
@@ -100,26 +97,23 @@ class GUI(Frame):
                 #Timer(5, self.periodicCall, ()).start()
 
         def periodicCall(self): 
-                done = False
-                for event in pygame.event.get():
+                  done = False
+                  for event in pygame.event.get():
                         if (event.type==pygame.QUIT):
                                 print event.type
                                 done = True
-                if (~done):
-                        self.axis1=self.joystick.get_axis(0)            
-                        self.axis2=self.joystick.get_axis(1)
-                        self.axis3=self.joystick.get_axis(2)
-                        self.lblAxis1.config(text="Axis 1: {}".format(self.axis1))
-                        self.lblAxis2.config(text="Axis 2: {}".format(self.axis2))
-                        self.lblAxis3.config(text="Axis 3: {}".format(self.axis3))
+                  if (~done):
+                        for i in range(self.joystick.get_numaxes()):
+                              self.list_Axes[i]=self.joystick.get_axis(i)            
+                              self.list_lblAxes[i].config(text="Axis {}: {}".format(i, self.list_Axes[i]))
                         self.update_idletasks()
                         self.after(100, self.periodicCall)
-                else: 
+                  else: 
                         print "Quit program"
 
 def main():
         window = Tk()
-        window.geometry("400x400+200+200")
+        window.geometry("400x600+200+200")
         mainGUI = GUI(window)
         window.mainloop()
 
