@@ -1,34 +1,46 @@
 
 #include "Servo.h"
 // motor_ctrl.ino
-Servo myservo;
-uint8_t resolution=0;
-char temp[10];
+#define DIR1_FORWARD	LOW
+#define DIR1_BACKWARD	HIGH
+#define PWM1	125
+#define DIR1_PIN	9 	// This pin is for direction control, CHANGE RESPECTIVELY to your selection
+#define PWM1_PIN	10	// This pin is for PWM control, CHANGE RESPECTIVELY to your selection
+void stopMotor();	//Forward declaration, this func is used to stop the motor
 void setup() {
-	// myservo.attach(9,1000,2000);
-	// myservo.write(0);
+	pinMode(DIR1_PIN, OUTPUT);
+	pinMode(PWM1_PIN, OUTPUT);
+	stopMotor();
 	Serial.begin(9600);
 }
 
 void loop() {
-	// switch (myservo.read()) {
-	//      case 0:
-	//      	myservo.write(90);
-	//        // do something
-	//        break;
-	//      case 90:
-	//      	myservo.write(180);
-	//        // do something
-	//        break;
-	//      case 180:
-	//      	myservo.write(0);
-	//         break;
-	//  } 
+	char command;
+	if (Serial.available()>0){
+		command = Serial.read();
+		if (command=='1'){
+			// Turn motor forward
+			stopMotor();
+			digitalWrite(DIR1_PIN, DIR1_FORWARD);
+			analogWrite(PWM1_PIN, PWM1);
+		}
+		else if (command=='2'){
+			// Turn motor backward
+			stopMotor();
+			digitalWrite(DIR1_PIN, DIR1_BACKWARD);
+			// analogWrite(PWM1_PIN, 255-PWM1);
+			analogWrite(PWM1_PIN, PWM1);
+		}
+		else if (command=='0'){
+			stopMotor();
+		}
+	}
 
 }
 
-void serialEvent(){
-	char temp = Serial.read();
-	Serial.println(temp);
-}
 
+void stopMotor(){
+	digitalWrite(DIR1_PIN, DIR1_FORWARD);
+	digitalWrite(PWM1_PIN, LOW);
+	delay(50);
+}
