@@ -22,14 +22,20 @@ void loop() {
 			// Turn motor forward
 			stopMotor();
 			digitalWrite(DIR1_PIN, DIR1_FORWARD);
-			analogWrite(PWM1_PIN, PWM1);
+			for (uint16_t pwm_value = 0; pwm_value<256; pwm_value++){
+				analogWrite(PWM1_PIN, pwm_value);
+				delay(10);
+			}
 		}
 		else if (command=='2'){
 			// Turn motor backward
 			stopMotor();
 			digitalWrite(DIR1_PIN, DIR1_BACKWARD);
-			// analogWrite(PWM1_PIN, 255-PWM1);
-			analogWrite(PWM1_PIN, PWM1);
+			for (uint16_t pwm_value = 0; pwm_value<256; pwm_value++){
+				analogWrite(PWM1_PIN, 255-pwm_value);
+				delay(10);
+			}
+				// analogWrite(PWM1_PIN, pwm_value);
 		}
 		else if (command=='0'){
 			stopMotor();
