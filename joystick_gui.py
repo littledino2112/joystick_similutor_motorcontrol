@@ -16,6 +16,7 @@ class GUI(Frame):
             # Initialize pygame
             pygame.init()
             self.joystickFound = 0
+            self.serialStarted = False
             # Check if there is any joystick connected
             if (pygame.joystick.get_count()):
                   self.joystickFound = 1
@@ -59,7 +60,7 @@ class GUI(Frame):
                   self.lblButtonNumbers.pack()
 
                   # Show axis value
-                  self.list_Axes = list()  # create a list to contain axes
+                  self.list_Axes = list()  # create a list to contain axes' value
                   self.list_lblAxes = list()
                   for i in range(self.joystick.get_numaxes()):
                         self.list_Axes.append(0)      # Initialize value for axis is 0
@@ -118,6 +119,7 @@ class GUI(Frame):
 
       def periodicCall(self): 
             done = False
+            command = ""
             for event in pygame.event.get():
                   if (event.type==pygame.QUIT):
                           print event.type
@@ -126,6 +128,13 @@ class GUI(Frame):
                   for i in range(self.joystick.get_numaxes()):
                         self.list_Axes[i]=self.joystick.get_axis(i)            
                         self.list_lblAxes[i].config(text="Axis {}: {}".format(i, self.list_Axes[i]))
+                        if (self.serialStarted):
+                              command = command + "axis{}".format(i) + "," + "{0:.1f}".format(self.list_Axes[i])
+                              if (i==self.joystick.get_numaxes()-1):
+                                    command = command + '\n'
+                              else:
+                                    command = command + ','
+                  print command
                   self.update_idletasks()
                   self.after(100, self.periodicCall)
             else: 
@@ -155,9 +164,10 @@ class GUI(Frame):
             selected = self.cbboxSerialPort.get()
             try:
                   self.selectedSerialPort = serial.Serial(selected, 9600, timeout=2)
+                  self.serialStarted = True
             except (OSError, serial.SerialTimeoutException):
                   tkMessageBox.showinfo("Timout error connection to serial port")
-            self.selectedSerialPort.write("Hoang")
+            self.selectedSerialPort.write('1234')
             
 
 def main():
