@@ -1,4 +1,4 @@
-from Tkinter import Label, Tk, Frame, StringVar, Button, LEFT, RIGHT, BOTTOM, Entry, LabelFrame
+from Tkinter import Label, Tk, Frame, StringVar, Button, LEFT, RIGHT, BOTTOM, Entry, LabelFrame, Checkbutton, IntVar
 from threading import Timer
 import pygame
 import serial, glob, sys
@@ -61,11 +61,16 @@ class GUI(Frame):
 
                   # Show axis value
                   self.list_Axes = list()  # create a list to contain axes' value
-                  self.list_lblAxes = list()
+                  # self.list_lblAxes = list()
+                  self.list_chkbtnAxes = list()
+                  self.list_chkbtnSelect = list()
                   for i in range(self.joystick.get_numaxes()):
                         self.list_Axes.append(0)      # Initialize value for axis is 0
-                        self.list_lblAxes.append(Label(self, text="Axis {}: {}".format(i, self.list_Axes[i])))
-                        self.list_lblAxes[i].pack()
+                        # self.list_lblAxes.append(Label(self, text="Axis {}: {}".format(i, self.list_Axes[i])))
+                        # self.list_lblAxes[i].pack()
+                        self.list_chkbtnSelect.append(IntVar())
+                        self.list_chkbtnAxes.append(Checkbutton(self, text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]),variable=self.list_chkbtnSelect[i]))
+                        self.list_chkbtnAxes[i].pack()
 
                   # Add 3 entry texts which are used to config motors' speed.
                   label_frame_motor_config = LabelFrame(self, text="Motors' Speed configuration")
@@ -127,25 +132,25 @@ class GUI(Frame):
             if (~done):
                   for i in range(self.joystick.get_numaxes()):
                         self.list_Axes[i]=self.joystick.get_axis(i)            
-                        self.list_lblAxes[i].config(text="Axis {}: {}".format(i, self.list_Axes[i]))
+                        self.list_chkbtnAxes[i].config(text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]))
+                        # self.list_lblAxes[i].config(text="Axis {}: {}".format(i, self.list_Axes[i]))
                         if (self.serialStarted):
+                              if self.list_chkbtnSelect[i].get()==1:
+                                    print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
                               # command = command + "axis{}".format(i) + "," + "{0:.1f}".format(self.list_Axes[i])
                               # if (i==self.joystick.get_numaxes()-1):
                               #       command = command + '\0\n'
                               # else:
                               #       command = command + ','
                               # if axis value is greater than 0.5, then move forward; less than -0.5, then move backward. Otherwise, stop the motor
-                              if self.list_Axes[i]>0.5:
-                                    command = command + 'f'      
-                              elif self.list_Axes[i]< -0.5:
-                                    command = command + 'b'
-                              else:
-                                    command = command + 's'
-
-                              if (i==self.joystick.get_numaxes()-1):
-                                    command = command + '\0\n'
-                              else:
+                                    if self.list_Axes[i]>0.5:
+                                          command = command + 'f'      
+                                    elif self.list_Axes[i]< -0.5:
+                                          command = command + 'b'
+                                    else:
+                                          command = command + 's'
                                     command = command + ','
+                  command = command + '\0\n'
                   if (self.serialStarted):
                         self.selectedSerialPort.write(command) 
                         print command
@@ -182,6 +187,8 @@ class GUI(Frame):
             except (OSError, serial.SerialTimeoutException):
                   tkMessageBox.showinfo("Timout error connection to serial port")
             # self.selectedSerialPort.write('1234')
+
+            
             
 
 def main():
