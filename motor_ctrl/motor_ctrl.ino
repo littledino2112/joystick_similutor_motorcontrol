@@ -1,11 +1,10 @@
-
-#include "Servo.h"
 // motor_ctrl.ino
 #define DIR1_FORWARD	LOW
 #define DIR1_BACKWARD	HIGH
 #define PWM1	125
 #define DIR1_PIN	9 	// This pin is for direction control, CHANGE RESPECTIVELY to your selection
 #define PWM1_PIN	10	// This pin is for PWM control, CHANGE RESPECTIVELY to your selection
+
 void stopMotor();	//Forward declaration, this func is used to stop the motor
 void setup() {
 	pinMode(DIR1_PIN, OUTPUT);
