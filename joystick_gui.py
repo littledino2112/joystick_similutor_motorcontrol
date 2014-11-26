@@ -129,12 +129,26 @@ class GUI(Frame):
                         self.list_Axes[i]=self.joystick.get_axis(i)            
                         self.list_lblAxes[i].config(text="Axis {}: {}".format(i, self.list_Axes[i]))
                         if (self.serialStarted):
-                              command = command + "axis{}".format(i) + "," + "{0:.1f}".format(self.list_Axes[i])
+                              # command = command + "axis{}".format(i) + "," + "{0:.1f}".format(self.list_Axes[i])
+                              # if (i==self.joystick.get_numaxes()-1):
+                              #       command = command + '\0\n'
+                              # else:
+                              #       command = command + ','
+                              # if axis value is greater than 0.5, then move forward; less than -0.5, then move backward. Otherwise, stop the motor
+                              if self.list_Axes[i]>0.5:
+                                    command = command + 'f'      
+                              elif self.list_Axes[i]< -0.5:
+                                    command = command + 'b'
+                              else:
+                                    command = command + 's'
+
                               if (i==self.joystick.get_numaxes()-1):
-                                    command = command + '\n'
+                                    command = command + '\0\n'
                               else:
                                     command = command + ','
-                  print command
+                  if (self.serialStarted):
+                        self.selectedSerialPort.write(command) 
+                        print command
                   self.update_idletasks()
                   self.after(100, self.periodicCall)
             else: 
@@ -167,7 +181,7 @@ class GUI(Frame):
                   self.serialStarted = True
             except (OSError, serial.SerialTimeoutException):
                   tkMessageBox.showinfo("Timout error connection to serial port")
-            self.selectedSerialPort.write('1234')
+            # self.selectedSerialPort.write('1234')
             
 
 def main():
