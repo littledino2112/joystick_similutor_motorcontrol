@@ -5,10 +5,13 @@
 #define DIR_BACKWARD HIGH
 #define PWM1	255
 #define PWM2	255
+#define PWM3	255
 #define DIR1_PIN	9 	// This pin is for direction control, CHANGE RESPECTIVELY to your selection
 #define PWM1_PIN	10	// This pin is for PWM control, CHANGE RESPECTIVELY to your selection
 #define DIR2_PIN	12
 #define PWM2_PIN	11
+#define DIR3_PIN	7
+#define	PWM3_PIN	6
 #define MAX_NUM_BYTES 50
 void stopMotor(uint8_t);	//Forward declaration, this func is used to stop the motor
 void setup() {
@@ -16,8 +19,11 @@ void setup() {
 	pinMode(PWM1_PIN, OUTPUT);
 	pinMode(DIR2_PIN, OUTPUT);
 	pinMode(PWM2_PIN, OUTPUT);
+	pinMode(DIR3_PIN, OUTPUT);
+	pinMode(PWM3_PIN, OUTPUT);
 	stopMotor(1);
 	stopMotor(2);
+	stopMotor(3);
 	Serial.begin(9600);
 }
 
@@ -25,6 +31,7 @@ void loop() {
 	char command[MAX_NUM_BYTES];
 	static char previousCommand1='s';	// Used to detect if one command is repeated, this is used to avoid 'sluggish' in the motor
 	static char previousCommand2='s';	// Used to detect if one command is repeated, this is used to avoid 'sluggish' in the motor
+	static char previousCommand3='s';	// Used to detect if one command is repeated, this is used to avoid 'sluggish' in the motor
 	if (Serial.available()>0){
 		Serial.readBytesUntil('\n',command, MAX_NUM_BYTES);
 		Serial.println(command);
@@ -84,6 +91,35 @@ void loop() {
 		    	previousCommand2='s';
 		      // do something
 		}
+
+		switch (command[4]) {	// Check rotation's direction of axis 0
+		    case 'f':
+				if (previousCommand3!='f'){
+					stopMotor(3);
+					digitalWrite(DIR3_PIN, DIR_FORWARD);
+					for (uint16_t pwm_value = 0; pwm_value<PWM3; pwm_value++){
+						analogWrite(PWM3_PIN, pwm_value);
+					}
+				}
+				previousCommand3 = 'f';      // do something
+			    break;
+		    case 'b':
+		      // do something
+				if (previousCommand3!='b'){
+					stopMotor(3);
+					digitalWrite(DIR3_PIN, DIR_BACKWARD);
+					for (uint16_t pwm_value = 0; pwm_value<PWM3; pwm_value++){
+						analogWrite(PWM3_PIN, 255-pwm_value);
+						// analogWrite(PWM1_PIN, pwm_value);
+					}
+				}
+				previousCommand3='b';		        
+				break;
+		    default:	// default mode is stop motor 
+		    	stopMotor(3);
+		    	previousCommand3='s';
+		      // do something
+		}
 	}
 }
 
@@ -100,6 +136,11 @@ void stopMotor(uint8_t motor_number){
 			digitalWrite(PWM2_PIN, LOW);
 			delay(10);	      // do something do something
 	        break;
+	    case 3:
+		    digitalWrite(DIR3_PIN, LOW);
+			digitalWrite(PWM3_PIN, LOW);
+			delay(10);	      // do something do something
+	        break;   
 	}
 	
 }
