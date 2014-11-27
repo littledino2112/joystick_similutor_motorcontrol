@@ -81,7 +81,7 @@ class GUI(Frame):
                   lblMotorSpeed1.pack(side=LEFT)
                   self.motorspeed1 = StringVar()
                   self.entryMotorSpeed1 = Entry(frame_motor1, textvariable=self.motorspeed1)
-                  self.motorspeed1.set("1.0")
+                  self.motorspeed1.set("255")
                   self.entryMotorSpeed1.pack(side=LEFT)
                   frame_motor2 = Frame(label_frame_motor_config)
                   frame_motor2.pack(fill='both')
@@ -89,7 +89,7 @@ class GUI(Frame):
                   lblMotorSpeed2.pack(side=LEFT)
                   self.motorspeed2 = StringVar()
                   self.entryMotorSpeed2 = Entry(frame_motor2, textvariable=self.motorspeed2)
-                  self.motorspeed2.set("1.0")
+                  self.motorspeed2.set("255")
                   self.entryMotorSpeed2.pack(side=LEFT)
                   frame_motor3 = Frame(label_frame_motor_config)
                   frame_motor3.pack(fill='both')
@@ -97,9 +97,9 @@ class GUI(Frame):
                   lblMotorSpeed3.pack(side=LEFT)
                   self.motorspeed3 = StringVar()
                   self.entryMotorSpeed3 = Entry(frame_motor3, textvariable=self.motorspeed3)
-                  self.motorspeed3.set("1.0")
+                  self.motorspeed3.set("255")
                   self.entryMotorSpeed3.pack(side=LEFT)
-                  self.btnMotorSpeed = Button(label_frame_motor_config, text="Change")
+                  self.btnMotorSpeed = Button(label_frame_motor_config, text="Change", command=self.configMotorSpeed)
                   self.btnMotorSpeed.pack()
 
                   # Add one Frame used to contain serial port selection (Combobox)
@@ -188,7 +188,10 @@ class GUI(Frame):
                   tkMessageBox.showinfo("Timout error connection to serial port")
             # self.selectedSerialPort.write('1234')
 
-            
+      def configMotorSpeed(self):
+            command = "{},{},{},".format(self.motorspeed1.get(),self.motorspeed2.get(),self.motorspeed3.get()) + '\0' + '\n'
+            if (self.serialStarted):
+                  self.selectedSerialPort.write(command)            
             
 
 def main():
