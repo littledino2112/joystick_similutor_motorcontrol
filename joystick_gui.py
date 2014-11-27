@@ -1,9 +1,9 @@
 from Tkinter import Label, Tk, Frame, StringVar, Button, LEFT, RIGHT, BOTTOM, Entry, LabelFrame, Checkbutton, IntVar
-from threading import Timer
 import pygame
 import serial, glob, sys
 import ttk
 import tkMessageBox
+import time
 
 DEBUG = 1
 
@@ -17,6 +17,7 @@ class GUI(Frame):
             pygame.init()
             self.joystickFound = 0
             self.serialStarted = False
+            self.calibratedAxes = False
             # Check if there is any joystick connected
             if (pygame.joystick.get_count()):
                   self.joystickFound = 1
@@ -41,7 +42,6 @@ class GUI(Frame):
                                   print "Joystick's name: {}".format(self.name_Joystick)
                                   print "Joystick's total axes: {}".format(self.total_Axes)
                                   print "Joystick's total buttons: {}".format(self.total_Buttons) 
-
             self.initGUI()
 
       def initGUI(self):
@@ -64,10 +64,11 @@ class GUI(Frame):
                   # self.list_lblAxes = list()
                   self.list_chkbtnAxes = list()
                   self.list_chkbtnSelect = list()
+                  self.list_calibratedMiddlePoint = list()
                   for i in range(self.joystick.get_numaxes()):
+                        # self.list_calibratedMiddlePoint.append(temp)
+                        # print self.list_calibratedMiddlePoint[i]
                         self.list_Axes.append(0)      # Initialize value for axis is 0
-                        # self.list_lblAxes.append(Label(self, text="Axis {}: {}".format(i, self.list_Axes[i])))
-                        # self.list_lblAxes[i].pack()
                         self.list_chkbtnSelect.append(IntVar())
                         self.list_chkbtnAxes.append(Checkbutton(self, text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]),variable=self.list_chkbtnSelect[i]))
                         self.list_chkbtnAxes[i].pack()
@@ -129,33 +130,33 @@ class GUI(Frame):
                   if (event.type==pygame.QUIT):
                           print event.type
                           done = True
-            if (~done):
-                  for i in range(self.joystick.get_numaxes()):
-                        self.list_Axes[i]=self.joystick.get_axis(i)            
-                        self.list_chkbtnAxes[i].config(text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]))
-                        # self.list_lblAxes[i].config(text="Axis {}: {}".format(i, self.list_Axes[i]))
+            if (done==False):
+                  if (self.calibratedAxes==False):
+                        for i in range(self.joystick.get_numaxes()):
+                              temp = float("{0:.2f}".format(self.joystick.get_axis(i)))
+                              self.list_calibratedMiddlePoint.append(temp)
+                        self.calibratedAxes=True
+                        self.after(100, self.periodicCall)
+                  else:
+                        for i in range(self.joystick.get_numaxes()):
+                              self.list_Axes[i]=self.joystick.get_axis(i)            
+                              self.list_chkbtnAxes[i].config(text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]))
+                              if (self.serialStarted):
+                                    if self.list_chkbtnSelect[i].get()==1:
+                                          print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
+                                          if self.list_Axes[i]>self.list_calibratedMiddlePoint[i]+0.1:
+                                                command = command + 'f'      
+                                          elif self.list_Axes[i]<self.list_calibratedMiddlePoint[i]-0.1:
+                                                command = command + 'b'
+                                          else:
+                                                command = command + 's'
+                                          command = command + ','
+                        command = command + '\0\n'
                         if (self.serialStarted):
-                              if self.list_chkbtnSelect[i].get()==1:
-                                    print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
-                              # command = command + "axis{}".format(i) + "," + "{0:.1f}".format(self.list_Axes[i])
-                              # if (i==self.joystick.get_numaxes()-1):
-                              #       command = command + '\0\n'
-                              # else:
-                              #       command = command + ','
-                              # if axis value is greater than 0.5, then move forward; less than -0.5, then move backward. Otherwise, stop the motor
-                                    if self.list_Axes[i]>0.5:
-                                          command = command + 'f'      
-                                    elif self.list_Axes[i]< -0.5:
-                                          command = command + 'b'
-                                    else:
-                                          command = command + 's'
-                                    command = command + ','
-                  command = command + '\0\n'
-                  if (self.serialStarted):
-                        self.selectedSerialPort.write(command) 
-                        print command
-                  self.update_idletasks()
-                  self.after(100, self.periodicCall)
+                              self.selectedSerialPort.write(command) 
+                              print command
+                        self.update_idletasks()
+                        self.after(100, self.periodicCall)
             else: 
                   print "Quit program"
 

@@ -73,9 +73,7 @@ void loop() {
 					}
 				}
 			}
-			Serial.println(PWM1);
-			Serial.println(PWM2);
-			Serial.println(PWM3);
+			
 		}
 		else {
 			switch (command[0]) {	// Check rotation's direction of axis 0
