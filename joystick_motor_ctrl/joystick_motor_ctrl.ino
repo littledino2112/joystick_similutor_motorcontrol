@@ -78,88 +78,52 @@ void loop() {
 		else {
 			switch (command[0]) {	// Check rotation's direction of axis 0
 			    case 'f':
-					if (previousCommand1!='f'){
-						stopMotor(1);
-						digitalWrite(DIR1_PIN, DIR_FORWARD);
-						for (uint16_t pwm_value = 0; pwm_value<PWM1; pwm_value++){
-							analogWrite(PWM1_PIN, pwm_value);
-						}
-					}
-					previousCommand1 = 'f';      // do something
+					stopMotor(1);
+					digitalWrite(DIR1_PIN, DIR_FORWARD);
+					analogWrite(PWM1_PIN, PWM1);
 				    break;
 			    case 'b':
-			      // do something
-					if (previousCommand1!='b'){
-						stopMotor(1);
-						digitalWrite(DIR1_PIN, DIR_BACKWARD);
-						for (uint16_t pwm_value = 0; pwm_value<PWM1; pwm_value++){
-							// analogWrite(PWM1_PIN, 255-pwm_value);
-							analogWrite(PWM1_PIN, pwm_value);
-						}
-					}
-					previousCommand1='b';		        
+					stopMotor(1);
+					digitalWrite(DIR1_PIN, DIR_BACKWARD);
+					// analogWrite(PWM1_PIN, 255-PWM1);
+					analogWrite(PWM1_PIN, PWM1);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(1);
 			    	previousCommand1='s';
-			      // do something
 			}
 			switch (command[2]) {	// Check rotation's direction of axis 0
 			    case 'f':
-					if (previousCommand2!='f'){
-						stopMotor(2);
-						digitalWrite(DIR2_PIN, DIR_FORWARD);
-						for (uint16_t pwm_value = 0; pwm_value<PWM2; pwm_value++){
-							analogWrite(PWM2_PIN, pwm_value);
-						}
-					}
-					previousCommand2 = 'f';      // do something
+					stopMotor(2);
+					digitalWrite(DIR2_PIN, DIR_FORWARD);
+					analogWrite(PWM2_PIN, PWM2);
 				    break;
 			    case 'b':
-			      // do something
-					if (previousCommand2!='b'){
-						stopMotor(2);
-						digitalWrite(DIR2_PIN, DIR_BACKWARD);
-						for (uint16_t pwm_value = 0; pwm_value<PWM2; pwm_value++){
-							// analogWrite(PWM2_PIN, 255-pwm_value);
-							analogWrite(PWM2_PIN, pwm_value);
-						}
-					}
-					previousCommand2='b';		        
+					stopMotor(2);
+					digitalWrite(DIR2_PIN, DIR_BACKWARD);
+					// analogWrite(PWM2_PIN, 255-PWM2);
+					analogWrite(PWM2_PIN, PWM2);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(2);
 			    	previousCommand2='s';
-			      // do something
 			}
 
 			switch (command[4]) {	// Check rotation's direction of axis 0
 			    case 'f':
-					if (previousCommand3!='f'){
-						stopMotor(3);
-						digitalWrite(DIR3_PIN, DIR_FORWARD);
-						for (uint16_t pwm_value = 0; pwm_value<PWM3; pwm_value++){
-							analogWrite(PWM3_PIN, pwm_value);
-						}
-					}
-					previousCommand3 = 'f';      // do something
+					stopMotor(3);
+					digitalWrite(DIR3_PIN, DIR_FORWARD);
+					analogWrite(PWM3_PIN, PWM3);
 				    break;
 			    case 'b':
-			      // do something
-					if (previousCommand3!='b'){
-						stopMotor(3);
-						digitalWrite(DIR3_PIN, DIR_BACKWARD);
-						for (uint16_t pwm_value = 0; pwm_value<PWM3; pwm_value++){
-							// analogWrite(PWM3_PIN, 255-pwm_value);
-							analogWrite(PWM3_PIN, pwm_value);
-						}
-					}
-					previousCommand3='b';		        
+					stopMotor(3);
+					digitalWrite(DIR3_PIN, DIR_BACKWARD);
+					// analogWrite(PWM3_PIN, 255-PWM3);
+					analogWrite(PWM3_PIN, PWM3);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(3);
 			    	previousCommand3='s';
-			      // do something
 			}
 		}
 
