@@ -29,9 +29,6 @@ void setup() {
 
 void loop() {
 	char command[MAX_NUM_BYTES];
-	static char previousCommand1='s';	// Used to detect if one command is repeated, this is used to avoid 'sluggish' in the motor
-	static char previousCommand2='s';	// Used to detect if one command is repeated, this is used to avoid 'sluggish' in the motor
-	static char previousCommand3='s';	// Used to detect if one command is repeated, this is used to avoid 'sluggish' in the motor
 	if (Serial.available()>0){
 		uint8_t number_bytes=0;
 		number_bytes=Serial.readBytesUntil('\n',command, MAX_NUM_BYTES);
@@ -85,12 +82,11 @@ void loop() {
 			    case 'b':
 					stopMotor(1);
 					digitalWrite(DIR1_PIN, DIR_BACKWARD);
-					// analogWrite(PWM1_PIN, 255-PWM1);
-					analogWrite(PWM1_PIN, PWM1);
+					analogWrite(PWM1_PIN, 255-PWM1);
+					// analogWrite(PWM1_PIN, PWM1);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(1);
-			    	previousCommand1='s';
 			}
 			switch (command[2]) {	// Check rotation's direction of axis 0
 			    case 'f':
@@ -101,12 +97,11 @@ void loop() {
 			    case 'b':
 					stopMotor(2);
 					digitalWrite(DIR2_PIN, DIR_BACKWARD);
-					// analogWrite(PWM2_PIN, 255-PWM2);
-					analogWrite(PWM2_PIN, PWM2);
+					analogWrite(PWM2_PIN, 255-PWM2);
+					// analogWrite(PWM2_PIN, PWM2);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(2);
-			    	previousCommand2='s';
 			}
 
 			switch (command[4]) {	// Check rotation's direction of axis 0
@@ -118,12 +113,11 @@ void loop() {
 			    case 'b':
 					stopMotor(3);
 					digitalWrite(DIR3_PIN, DIR_BACKWARD);
-					// analogWrite(PWM3_PIN, 255-PWM3);
-					analogWrite(PWM3_PIN, PWM3);
+					analogWrite(PWM3_PIN, 255-PWM3);
+					// analogWrite(PWM3_PIN, PWM3);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(3);
-			    	previousCommand3='s';
 			}
 		}
 
