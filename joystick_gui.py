@@ -45,7 +45,7 @@ class GUI(Frame):
             self.initGUI()
 
       def initGUI(self):
-            self.parent.title("Joystick GUI")
+            self.parent.title("Joystick GUI v2.1")
             self.pack(fill='both')
 
             
@@ -66,8 +66,6 @@ class GUI(Frame):
                   self.list_chkbtnSelect = list()
                   self.list_calibratedMiddlePoint = list()
                   for i in range(self.joystick.get_numaxes()):
-                        # self.list_calibratedMiddlePoint.append(temp)
-                        # print self.list_calibratedMiddlePoint[i]
                         self.list_Axes.append(0)      # Initialize value for axis is 0
                         self.list_chkbtnSelect.append(IntVar())
                         self.list_chkbtnAxes.append(Checkbutton(self, text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]),variable=self.list_chkbtnSelect[i]))
@@ -133,9 +131,10 @@ class GUI(Frame):
             if (done==False):
                   if (self.calibratedAxes==False):
                         for i in range(self.joystick.get_numaxes()):
-                              temp = float("{0:.2f}".format(self.joystick.get_axis(i)))
-                              self.list_calibratedMiddlePoint.append(temp)
+                              temp = self.joystick.get_axis(i)
+                              self.list_calibratedMiddlePoint.append(float("{0:.2f}".format(temp)))
                               if DEBUG:
+                                    print "Stored calibrated axis {}: {}".format(i, self.list_calibratedMiddlePoint[i])
                                     print "Calibrated axis {}: {}".format(i, temp)
                         self.calibratedAxes=True
                         self.after(100, self.periodicCall)
@@ -143,9 +142,12 @@ class GUI(Frame):
                         for i in range(self.joystick.get_numaxes()):
                               self.list_Axes[i]=self.joystick.get_axis(i)            
                               self.list_chkbtnAxes[i].config(text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]))
+                              if DEBUG:
+                                    print "Axis {} value: {}".format(i, self.list_Axes[i])
                               if (self.serialStarted):
                                     if self.list_chkbtnSelect[i].get()==1:
-                                          print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
+                                          if DEBUG:
+                                                print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
                                           if self.list_Axes[i]>self.list_calibratedMiddlePoint[i]+0.1:
                                                 command = command + 'f'      
                                           elif self.list_Axes[i]<self.list_calibratedMiddlePoint[i]-0.1:
