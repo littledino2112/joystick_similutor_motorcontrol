@@ -135,6 +135,8 @@ class GUI(Frame):
                         for i in range(self.joystick.get_numaxes()):
                               temp = float("{0:.2f}".format(self.joystick.get_axis(i)))
                               self.list_calibratedMiddlePoint.append(temp)
+                              if DEBUG:
+                                    print "Calibrated axis {}: {}".format(i, temp)
                         self.calibratedAxes=True
                         self.after(100, self.periodicCall)
                   else:
