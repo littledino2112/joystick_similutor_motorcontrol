@@ -6,6 +6,7 @@ import tkMessageBox
 import time
 
 DEBUG = 1
+CALIBRATED_COEF = 10
 
 class GUI(Frame):
       """docstring for GUI"""
@@ -18,6 +19,7 @@ class GUI(Frame):
             self.joystickFound = 0
             self.serialStarted = False
             self.calibratedAxes = False
+            self.calibratedTime = 0
             # Check if there is any joystick connected
             if (pygame.joystick.get_count()):
                   self.joystickFound = 1
@@ -45,7 +47,7 @@ class GUI(Frame):
             self.initGUI()
 
       def initGUI(self):
-            self.parent.title("Joystick GUI v2.1")
+            self.parent.title("Joystick GUI v2.1.1")
             self.pack(fill='both')
 
             
@@ -130,13 +132,20 @@ class GUI(Frame):
                           done = True
             if (done==False):
                   if (self.calibratedAxes==False):
-                        for i in range(self.joystick.get_numaxes()):
-                              temp = self.joystick.get_axis(i)
-                              self.list_calibratedMiddlePoint.append(float("{0:.2f}".format(temp)))
-                              if DEBUG:
-                                    print "Stored calibrated axis {}: {}".format(i, self.list_calibratedMiddlePoint[i])
-                                    print "Calibrated axis {}: {}".format(i, temp)
-                        self.calibratedAxes=True
+                        if (self.calibratedTime<CALIBRATED_COEF):
+                              for i in range(self.joystick.get_numaxes()):
+                                    temp = self.joystick.get_axis(i)
+                                    if DEBUG:
+                                          print "Calibrated time {}, axis {}, value: {}".format(self.calibratedTime, i, temp)
+                              self.calibratedTime = self.calibratedTime+1
+                        else:
+                              for i in range(self.joystick.get_numaxes()):
+                                    temp = self.joystick.get_axis(i)
+                                    self.list_calibratedMiddlePoint.append(float("{0:.2f}".format(temp)))
+                                    if DEBUG:
+                                          print "Stored calibrated axis {}: {}".format(i, self.list_calibratedMiddlePoint[i])
+                                          print "Calibrated axis {}: {}".format(i, temp)
+                              self.calibratedAxes=True
                         self.after(100, self.periodicCall)
                   else:
                         for i in range(self.joystick.get_numaxes()):
