@@ -82,8 +82,8 @@ void loop() {
 			    case 'b':
 					stopMotor(1);
 					digitalWrite(DIR1_PIN, DIR_BACKWARD);
-					analogWrite(PWM1_PIN, 255-PWM1);
-					// analogWrite(PWM1_PIN, PWM1);
+					// analogWrite(PWM1_PIN, 255-PWM1);
+					analogWrite(PWM1_PIN, PWM1);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(1);
@@ -97,8 +97,8 @@ void loop() {
 			    case 'b':
 					stopMotor(2);
 					digitalWrite(DIR2_PIN, DIR_BACKWARD);
-					analogWrite(PWM2_PIN, 255-PWM2);
-					// analogWrite(PWM2_PIN, PWM2);
+					// analogWrite(PWM2_PIN, 255-PWM2);
+					analogWrite(PWM2_PIN, PWM2);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(2);
@@ -113,8 +113,8 @@ void loop() {
 			    case 'b':
 					stopMotor(3);
 					digitalWrite(DIR3_PIN, DIR_BACKWARD);
-					analogWrite(PWM3_PIN, 255-PWM3);
-					// analogWrite(PWM3_PIN, PWM3);
+					// analogWrite(PWM3_PIN, 255-PWM3);
+					analogWrite(PWM3_PIN, PWM3);
 					break;
 			    default:	// default mode is stop motor 
 			    	stopMotor(3);
