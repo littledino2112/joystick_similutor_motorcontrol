@@ -47,7 +47,7 @@ class GUI(Frame):
             self.initGUI()
 
       def initGUI(self):
-            self.parent.title("Joystick GUI v2.1.1")
+            self.parent.title("Joystick GUI v2.1.2")
             self.pack(fill='both')
 
             
@@ -157,9 +157,9 @@ class GUI(Frame):
                                     if self.list_chkbtnSelect[i].get()==1:
                                           if DEBUG:
                                                 print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
-                                          if self.list_Axes[i]>self.list_calibratedMiddlePoint[i]+0.1:
+                                          if self.list_Axes[i]>self.list_calibratedMiddlePoint[i]+0.01:
                                                 command = command + 'f'      
-                                          elif self.list_Axes[i]<self.list_calibratedMiddlePoint[i]-0.1:
+                                          elif self.list_Axes[i]<self.list_calibratedMiddlePoint[i]-0.01:
                                                 command = command + 'b'
                                           else:
                                                 command = command + 's'
