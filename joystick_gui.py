@@ -47,7 +47,7 @@ class GUI(Frame):
             self.initGUI()
 
       def initGUI(self):
-            self.parent.title("Joystick GUI v2.1.2")
+            self.parent.title("Joystick GUI v2.1.3")
             self.pack(fill='both')
 
             
@@ -66,12 +66,24 @@ class GUI(Frame):
                   # self.list_lblAxes = list()
                   self.list_chkbtnAxes = list()
                   self.list_chkbtnSelect = list()
-                  self.list_calibratedMiddlePoint = list()
+                  self.list_calibratedMiddlePoint = list()  # This list is used to store calibrated middle coordinate of each axis
+                  self.list_calibrationLimit = list()       # list to store calibration limits for all axes
+                  self.list_entryCalibrationLimit = list()  # list to store entry widget used to config calibration limits
                   for i in range(self.joystick.get_numaxes()):
+                        # Initialize text variables for entry widget
+                        # These values are calibration limits for axes, since these limits are different from joystick to joystick.
+                        self.list_calibrationLimit.append(StringVar())
+                        self.list_calibrationLimit[i].set("0.01")
                         self.list_Axes.append(0)      # Initialize value for axis is 0
-                        self.list_chkbtnSelect.append(IntVar())
-                        self.list_chkbtnAxes.append(Checkbutton(self, text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]),variable=self.list_chkbtnSelect[i]))
-                        self.list_chkbtnAxes[i].pack()
+
+                        # GUI initializatoin, a temp Frame is created to contain a checkbutton and an entry together
+                        frame_temp = Frame(self)
+                        frame_temp.pack()
+                        self.list_chkbtnSelect.append(IntVar())   # Add initial variables for check button widget
+                        self.list_chkbtnAxes.append(Checkbutton(frame_temp, text="Axis {0:d}: {1:.2f}".format(i, self.list_Axes[i]),variable=self.list_chkbtnSelect[i]))
+                        self.list_chkbtnAxes[i].pack(side=LEFT)
+                        self.list_entryCalibrationLimit.append(Entry(frame_temp, textvariable=self.list_calibrationLimit[i]))
+                        self.list_entryCalibrationLimit[i].pack(side=LEFT)
 
                   # Add 3 entry texts which are used to config motors' speed.
                   label_frame_motor_config = LabelFrame(self, text="Motors' Speed configuration")
@@ -155,11 +167,16 @@ class GUI(Frame):
                                     print "Axis {} value: {}".format(i, self.list_Axes[i])
                               if (self.serialStarted):
                                     if self.list_chkbtnSelect[i].get()==1:
+                                          upper_limit = self.list_calibratedMiddlePoint[i] + float(self.list_calibrationLimit[i].get())
+                                          lower_limit = self.list_calibratedMiddlePoint[i] - float(self.list_calibrationLimit[i].get())
                                           if DEBUG:
                                                 print "Checkbutton {} select: {}".format(i, self.list_chkbtnSelect[i].get())
-                                          if self.list_Axes[i]>self.list_calibratedMiddlePoint[i]+0.01:
+                                                print "Lower limit of axis {}: {}".format(i, lower_limit) 
+                                                print "Upper limit of axis {}: {}".format(i, upper_limit)
+                                          if self.list_Axes[i] > upper_limit:
                                                 command = command + 'f'      
-                                          elif self.list_Axes[i]<self.list_calibratedMiddlePoint[i]-0.01:
+                                          elif self.list_Axes[i] < lower_limit:
+                                                
                                                 command = command + 'b'
                                           else:
                                                 command = command + 's'
@@ -200,7 +217,8 @@ class GUI(Frame):
                   self.serialStarted = True
             except (OSError, serial.SerialTimeoutException):
                   tkMessageBox.showinfo("Timout error connection to serial port")
-            # self.selectedSerialPort.write('1234')
+
+
 
       def configMotorSpeed(self):
             command = "{},{},{},".format(self.motorspeed1.get(),self.motorspeed2.get(),self.motorspeed3.get()) + '\0' + '\n'
