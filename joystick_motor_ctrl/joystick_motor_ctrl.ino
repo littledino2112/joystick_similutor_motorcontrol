@@ -15,7 +15,8 @@ uint16_t PWM2 = 255;
 uint16_t PWM3 = 255;
 void stopMotor(uint8_t);	//Forward declaration, this func is used to stop the motor
 void setup() {
-	pinMode(DIR1_PIN, OUTPUT);
+	// All pins to be configured in OUTPUT mode
+	pinMode(DIR1_PIN, OUTPUT);	
 	pinMode(PWM1_PIN, OUTPUT);
 	pinMode(DIR2_PIN, OUTPUT);
 	pinMode(PWM2_PIN, OUTPUT);
@@ -36,6 +37,11 @@ void loop() {
 		uint8_t number_bytes=0;
 		number_bytes=Serial.readBytesUntil('\n',command, MAX_NUM_BYTES);
 		Serial.println(command);
+
+		/* This portion of the code is used to parse the motor speed configed in Python GUI app 
+		 * Data is passed via serial port under this format [number],[number],[number], 3 number according to 3 axes' speed respectively
+		 * (e.g. 255,255,255,). Since transmitted data is string, so it needs to be converted to number */
+
 		if (command[0]>'0' & command[0]<'9'){
 			// data is passed under format [number],[number],[number],
 			uint8_t value = 0;
@@ -75,6 +81,12 @@ void loop() {
 			}
 			
 		}
+
+		/* Motor control part: First direction of motor is parsed from transmitted data via serial command
+		 * The transitted data is under this format [direction], [direction], [direction] 
+		 * where [direction] is 'f'(forward), 'b'(backward) or 's'(stop) 
+		 * previousCommandx is used to check if one direction is already selected previously. 
+		 * Without this, the motor movement becomes 'choppy' */
 		else {
 			switch (command[0]) {	// Check rotation's direction of axis 0
 			    case 'f':
@@ -85,7 +97,7 @@ void loop() {
 							analogWrite(PWM1_PIN, pwm_value);
 						}
 					}
-					previousCommand1 = 'f';      // do something
+					previousCommand1 = 'f';      //  
 				    break;
 			    case 'b':
 			      // do something
